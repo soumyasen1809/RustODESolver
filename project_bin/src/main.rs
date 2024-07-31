@@ -1,5 +1,4 @@
-use numerical_methods_lib::explicit_euler_method::*;
-use numerical_methods_lib::heun_method::*;
+use numerical_methods_lib::*;
 
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
@@ -12,13 +11,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let f = |x: f64, _y: f64| 2.0 * x; // function: f(t,x)  // y marked as _y for now
 
-    euler_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
+    explicit_euler_method::euler_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
     println!("Solution for explicit Euler: {:?}\n", solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
-    heun_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
+    heun_method::heun_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
     println!("Solution for Heun: {:?}\n", solution);
+    solution.clear();
+    solution.push(INITIAL_SOLUTION);
+
+    runge_kutta4::runge_kutta_4(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
+    println!("Solution for RK4: {:?}\n", solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 

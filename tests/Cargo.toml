@@ -12,3 +12,11 @@ numerical_methods_lib ={ path = "../numerical_methods_lib"}
 [[test]]
 name = "test_explicit_euler"
 path = "explicit_euler_test.rs"
+
+[[test]]
+name = "test_heun"
+path = "heun_test.rs"
+
+[[test]]
+name = "test_rk4"
+path = "runge_kutta4_test.rs"
