@@ -2,7 +2,15 @@
 name = "ode_solver"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "MIT"
+authors = ["Sen"]
 
 [dependencies]
+
+# Check https://rust-classes.com/chapter_4_3
+[workspace]
+members = [
+    "numerical_methods_lib",
+    "project_bin",
+]
+resolver = "2"
