@@ -1,0 +1,14 @@
+[package]
+name = "tests"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Sen"]
+publish = false
+
+[dev-dependencies]
+numerical_methods_lib ={ path = "../numerical_methods_lib"}
+
+[[test]]
+name = "test_explicit_euler"
+path = "explicit_euler_test.rs"

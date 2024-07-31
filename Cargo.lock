@@ -9,9 +9,19 @@ version = "0.1.0"
 [[package]]
 name = "ode_solver"
 version = "0.1.0"
+dependencies = [
+ "numerical_methods_lib",
+]
 
 [[package]]
 name = "project_bin"
+version = "0.1.0"
+dependencies = [
+ "numerical_methods_lib",
+]
+
+[[package]]
+name = "tests"
 version = "0.1.0"
 dependencies = [
  "numerical_methods_lib",

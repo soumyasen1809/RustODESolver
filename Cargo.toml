@@ -6,11 +6,13 @@ license = "MIT"
 authors = ["Sen"]
 
 [dependencies]
+numerical_methods_lib ={ path = "numerical_methods_lib"}    # needed for the tests to work
 
 # Check https://rust-classes.com/chapter_4_3
 [workspace]
 members = [
     "numerical_methods_lib",
     "project_bin",
+    "tests",
 ]
 resolver = "2"

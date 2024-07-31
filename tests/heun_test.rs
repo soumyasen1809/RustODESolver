@@ -1,4 +1,4 @@
-use numerical_methods_lib::explicit_euler_method::*;
+use numerical_methods_lib::heun_method::*;
 
 #[cfg(test)]
 mod tests {
@@ -10,13 +10,13 @@ mod tests {
     const INITIAL_SOLUTION: f64 = 1.0; // S0
 
     #[test]
-    fn explict_euler_initial_val() {
+    fn heun_initial_value() {
         let f = |x: f64, _y: f64| 2.0 * x; // function: f(t,x)  // y marked as _y for now
 
         let num_steps: i32 = ((T_FINAL - T_INITIAL) as f64 / TIME_STEP) as i32;
         let mut solution: Vec<f64> = vec![INITIAL_SOLUTION];
 
-        euler_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
+        heun_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
         assert_eq!(*solution.get(0).unwrap(), INITIAL_SOLUTION);
     }
 }
