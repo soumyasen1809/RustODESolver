@@ -22,6 +22,7 @@ impl<'a> HeunSolver<'a> {
 }
 
 impl<'a> Solve for HeunSolver<'a> {
+    /// Solves the ODE with the Heun solver.
     fn solve(&self, solution: &mut Vec<f64>) {
         println!("\n Starting Heun Method ...");
         self.heun_method(solution);

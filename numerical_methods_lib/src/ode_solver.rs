@@ -1,3 +1,4 @@
+/// OdeSolverParams contains all the necessary parameters for solving the ODE numerically
 pub struct OdeSolverParams {
     pub f: fn(f64, f64) -> f64,
     pub num_steps: i32,
@@ -28,6 +29,7 @@ impl<'a> OdeSolver<'a> {
 }
 
 pub trait Solve {
+    /// Solves the ODE with the intended solver.
     fn solve(&self, solution: &mut Vec<f64>);
 }
 

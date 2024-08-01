@@ -21,6 +21,7 @@ impl<'a> ExplicitEulerSolver<'a> {
 }
 
 impl<'a> Solve for ExplicitEulerSolver<'a> {
+    /// Solves the ODE with the Explicit Euler Method solver.
     fn solve(&self, solution: &mut Vec<f64>) {
         println!("\n Starting Explicit Euler Method ...");
         self.solve_euler_method(solution);
