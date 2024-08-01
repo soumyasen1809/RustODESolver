@@ -22,17 +22,17 @@ impl OdeSolverParams {
 
 pub struct OdeSolver<'a> {
     pub name: &'a str,
-    pub params: OdeSolverParams,
+    pub params: &'a OdeSolverParams,
 }
 
 impl<'a> OdeSolver<'a> {
-    pub fn new(name: &'a str, params: OdeSolverParams) -> Self {
+    pub fn new(name: &'a str, params: &'a OdeSolverParams) -> Self {
         OdeSolver { name, params }
     }
 }
 
 impl<'a> Solve for OdeSolver<'a> {
     fn solve(&self, solution: &mut Vec<f64>) {
-        println!("Inside OdeSolver...");
+        println!("Inside OdeSolver... with solution: {:?}", solution);
     }
 }

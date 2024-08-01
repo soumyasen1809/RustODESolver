@@ -13,10 +13,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let f = |x: f64, _y: f64| 2.0 * x; // function: f(t,x)  // y marked as _y for now
 
     let solver_params = ode_solver::OdeSolverParams::new(f, num_steps, T_INITIAL, TIME_STEP);
-    let solver = ode_solver::OdeSolver::new("ODE Solver", solver_params);
+    let solver_object = ode_solver::OdeSolver::new("ODE Solver Explicit Euler", &solver_params);
 
     let explicit_euler_solver = explicit_euler_method::ExplicitEulerSolver {
-        solver: Box::new(solver),
+        solver: Box::new(solver_object),
     };
 
     explicit_euler_solver.solve(&mut solution);
@@ -24,7 +24,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
-    heun_method::heun_method(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
+    let solver_object2 = ode_solver::OdeSolver::new("ODE Solver Heun", &solver_params);
+    let heun_method_solver = heun_method::HeunSolver {
+        solver: Box::new(solver_object2),
+    };
+    heun_method_solver.solve(&mut solution);
     println!("Solution for Heun: {:?}\n", solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
