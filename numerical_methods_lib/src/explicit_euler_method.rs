@@ -1,4 +1,4 @@
-use crate::ode_solver::{OdeSolver, Solve};
+use crate::ode_solver::{OdeSolver, Printable, Solve};
 
 /// Implements the Euler Method.
 
@@ -22,7 +22,20 @@ impl<'a> ExplicitEulerSolver<'a> {
 
 impl<'a> Solve for ExplicitEulerSolver<'a> {
     fn solve(&self, solution: &mut Vec<f64>) {
-        println!("Starting Explicit Euler Method ...\n");
+        println!("\n Starting Explicit Euler Method ...");
         self.solve_euler_method(solution);
+    }
+}
+
+impl<'a> Printable for ExplicitEulerSolver<'a> {
+    fn print_val(&self, solution: &Vec<f64>) {
+        for (index, value) in solution.iter().enumerate() {
+            println!(
+                "time: {:.3} \t value: {:.3}",
+                (self.solver.params.t_initial as f64)
+                    + (index as f64 * self.solver.params.time_step),
+                *value,
+            )
+        }
     }
 }

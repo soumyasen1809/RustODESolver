@@ -1,4 +1,4 @@
-use crate::ode_solver::{OdeSolver, Solve};
+use crate::ode_solver::{OdeSolver, Printable, Solve};
 
 /// Implements the Heun Method.
 
@@ -23,7 +23,20 @@ impl<'a> HeunSolver<'a> {
 
 impl<'a> Solve for HeunSolver<'a> {
     fn solve(&self, solution: &mut Vec<f64>) {
-        println!("Starting Heun Method ...\n");
+        println!("\n Starting Heun Method ...");
         self.heun_method(solution);
+    }
+}
+
+impl<'a> Printable for HeunSolver<'a> {
+    fn print_val(&self, solution: &Vec<f64>) {
+        for (index, value) in solution.iter().enumerate() {
+            println!(
+                "time: {:.3} \t value: {:.3}",
+                (self.solver.params.t_initial as f64)
+                    + (index as f64 * self.solver.params.time_step),
+                *value,
+            )
+        }
     }
 }

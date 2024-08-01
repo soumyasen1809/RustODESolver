@@ -1,5 +1,5 @@
 use numerical_methods_lib::*;
-use ode_solver::Solve;
+use ode_solver::{Printable, Solve};
 
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
@@ -18,23 +18,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let explicit_euler_solver = explicit_euler_method::ExplicitEulerSolver {
         solver: Box::new(solver_object),
     };
-
     explicit_euler_solver.solve(&mut solution);
-    println!("Solution for explicit Euler: {:?}\n", solution);
+    explicit_euler_solver.print_val(&solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
     let solver_object2 = ode_solver::OdeSolver::new("ODE Solver Heun", &solver_params);
+
     let heun_method_solver = heun_method::HeunSolver {
         solver: Box::new(solver_object2),
     };
     heun_method_solver.solve(&mut solution);
-    println!("Solution for Heun: {:?}\n", solution);
+    heun_method_solver.print_val(&solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
-    runge_kutta4::runge_kutta_4(f, num_steps, T_INITIAL, TIME_STEP, &mut solution);
-    println!("Solution for RK4: {:?}\n", solution);
+    let solver3 = ode_solver::OdeSolver::new("ODE Solver Runge Kutta 4", &solver_params);
+
+    let rungekutta_solver = runge_kutta4::RungeKuttaSolver {
+        solver: Box::new(solver3),
+    };
+    rungekutta_solver.solve(&mut solution);
+    rungekutta_solver.print_val(&solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
