@@ -19,7 +19,7 @@ pub fn newton_raphson_method_root(
         num_iters += 1;
 
         if num_iters > max_iters {
-            println!("Max iterations {:?} reached", num_iters);
+            // println!("\n Max iterations {:?} reached", num_iters);
             break;
         }
     }

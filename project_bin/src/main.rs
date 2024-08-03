@@ -1,10 +1,9 @@
-use implicit_euler_method::implicit_euler_solve;
 use numerical_methods_lib::*;
 use ode_solver::{Printable, Solve};
 
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
-const TIME_STEP: f64 = 00.1; // h
+const TIME_STEP: f64 = 0.01; // h
 const INITIAL_SOLUTION: f64 = 1.0; // S0
 const TOLERANCE: f64 = 1e-8; // tol
 const MAX_ITERATIONS: i32 = 100;
@@ -16,7 +15,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let f = |_x: f64, _y: f64| -20.0 * _x * _y * _y; // function: f(t,x)  // y marked as _y for now
     let f_dash = |_x: f64, _y: f64| -40.0 * _x * _y; // function: f'(t,x)  // y marked as _y for now
 
-    let solver_params = ode_solver::OdeSolverParams::new(f, num_steps, T_INITIAL, TIME_STEP);
+    let solver_params = ode_solver::OdeSolverParams {
+        f: f,
+        num_steps: num_steps,
+        t_initial: T_INITIAL,
+        time_step: TIME_STEP,
+        ..Default::default() // We do not need the rest for the explicit method, so we leave as Default
+    };
     let solver_object = ode_solver::OdeSolver::new("ODE Solver Explicit Euler", &solver_params);
 
     let explicit_euler_solver = explicit_euler_method::ExplicitEulerSolver {
@@ -47,17 +52,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
-    implicit_euler_solve(
+    let solver_params_implicit = ode_solver::OdeSolverParams {
         f,
         f_dash,
         num_steps,
-        T_INITIAL,
-        TIME_STEP,
-        TOLERANCE,
-        MAX_ITERATIONS,
-        &mut solution,
-    );
-    println!("Solution for implicit Euler: {:.3?}\n", solution);
+        tolerance: TOLERANCE,
+        max_iters: MAX_ITERATIONS,
+        ..Default::default() // We can fill all the values, but for this case I have just filled the ones extra for the implicit
+    };
+    let solver4 = ode_solver::OdeSolver::new("ODE Solver Implicit Euler", &solver_params_implicit);
+    let implicit_euler_solver = implicit_euler_method::ImplicitEulerSolver {
+        solver: Box::new(solver4),
+    };
+    implicit_euler_solver.solve(&mut solution);
+    implicit_euler_solver.print_val(&solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
