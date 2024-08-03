@@ -1,4 +1,4 @@
-use crate::root_finders::newton_method::*;
+use crate::root_finders::newton_raphson_method::*;
 
 pub fn implicit_euler_solve(
     f: fn(f64, f64) -> f64,
@@ -10,6 +10,7 @@ pub fn implicit_euler_solve(
     max_iters: i32,
     solution: &mut Vec<f64>,
 ) {
+    println!("Using Newton Raphson method to find roots ...");
     for index in 0..(num_steps - 1) {
         let g = |z: f64| {
             z - solution.get(index as usize).unwrap()
@@ -25,7 +26,7 @@ pub fn implicit_euler_solve(
         // Check solution at:
         // https://www.reddit.com/r/learnrust/comments/xvxpy2/is_there_a_workaround_for_variable_capturing_in/
 
-        let newton_sol = newton_method_root(
+        let newton_sol = newton_raphson_method_root(
             g,
             g_dash,
             *solution.get(index as usize).unwrap(),

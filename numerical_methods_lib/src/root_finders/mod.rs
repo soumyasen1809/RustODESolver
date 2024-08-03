@@ -1,1 +1,1 @@
-pub mod newton_method;
+pub mod newton_raphson_method;
