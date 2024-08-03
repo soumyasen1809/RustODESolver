@@ -1,6 +1,8 @@
+use numerical_methods_lib::{implicit_euler_method, ode_solver, ode_solver::Solve};
+
 #[cfg(test)]
 mod tests {
-    use numerical_methods_lib::implicit_euler_method::implicit_euler_solve;
+    use super::*;
 
     const T_INITIAL: i32 = 0; // t0
     const T_FINAL: i32 = 1; // tf
@@ -17,17 +19,21 @@ mod tests {
         let f = |_x: f64, _y: f64| -20.0 * _x * _y * _y; // function: f(t,x)  // y marked as _y for now
         let f_dash = |_x: f64, _y: f64| -40.0 * _x * _y; // function: f'(t,x)  // y marked as _y for now
 
-        implicit_euler_solve(
+        let solver_params = ode_solver::OdeSolverParams {
             f,
             f_dash,
-            num_steps,
-            T_INITIAL,
-            TIME_STEP,
-            TOLERANCE,
-            MAX_ITERATIONS,
-            &mut solution,
-        );
-
+            t_initial: T_INITIAL,
+            time_step: TIME_STEP,
+            num_steps: num_steps,
+            tolerance: TOLERANCE,
+            max_iters: MAX_ITERATIONS,
+            ..Default::default()
+        };
+        let ode_solver = ode_solver::OdeSolver::new("Implicit Euler Method Test", &solver_params);
+        let implicit_solver = implicit_euler_method::ImplicitEulerSolver {
+            solver: Box::new(ode_solver),
+        };
+        implicit_solver.solve(&mut solution);
         assert_eq!(*solution.get(0).unwrap(), INITIAL_SOLUTION);
     }
 }
