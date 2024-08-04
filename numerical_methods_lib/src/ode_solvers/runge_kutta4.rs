@@ -1,4 +1,4 @@
-use crate::ode_solver::{OdeSolver, Printable, Solve};
+use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve};
 
 /// Implements the Runge Kutta 4 Method.
 
@@ -35,6 +35,7 @@ impl<'a> RungeKuttaSolver<'a> {
 }
 
 impl<'a> Solve for RungeKuttaSolver<'a> {
+    /// Solves the ODE with the Runge Kutta 4 solver.
     fn solve(&self, solution: &mut Vec<f64>) {
         println!("\n Starting RK4 Method ...");
         self.runge_kutta(solution);

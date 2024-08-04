@@ -1,4 +1,4 @@
-use numerical_methods_lib::{heun_method, ode_solver, ode_solver::Solve};
+use numerical_methods_lib::ode_solvers::{heun_method, ode_solver, ode_solver::Solve};
 
 #[cfg(test)]
 mod tests {
@@ -17,8 +17,14 @@ mod tests {
 
         let f = |x: f64, _y: f64| 2.0 * x; // function: f(t,x)  // y marked as _y for now
 
-        let solver_params = ode_solver::OdeSolverParams::new(f, num_steps, T_INITIAL, TIME_STEP);
-        let solver_object = ode_solver::OdeSolver::new("ODE Solver Heun", &solver_params);
+        let solver_params = ode_solver::OdeSolverParams {
+            f,
+            num_steps,
+            t_initial: T_INITIAL,
+            time_step: TIME_STEP,
+            ..Default::default()
+        };
+        let solver_object = ode_solver::OdeSolver::new("ODE Solver Heun Test", &solver_params);
         let heun_method_solver = heun_method::HeunSolver {
             solver: Box::new(solver_object),
         };
