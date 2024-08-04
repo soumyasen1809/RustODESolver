@@ -66,3 +66,23 @@ impl<'a> Printable for OdeSolver<'a> {
         }
     }
 }
+
+impl std::fmt::Display for OdeSolverParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "\t t_initial: {}, num_steps: {}, time_step: {}, tolerance: {}, max_iters: {}",
+            self.t_initial, self.num_steps, self.time_step, self.tolerance, self.max_iters
+        )
+    }
+}
+
+impl<'a> std::fmt::Display for OdeSolver<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Solver: {} with parameters:\n {}",
+            self.name, self.params
+        )
+    }
+}

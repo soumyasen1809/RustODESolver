@@ -24,6 +24,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let solver_object =
         ode_solvers::ode_solver::OdeSolver::new("ODE Solver Explicit Euler", &solver_params);
+    println!("{}", format!("{}", solver_object));
 
     let explicit_euler_solver = ode_solvers::explicit_euler_method::ExplicitEulerSolver {
         solver: Box::new(solver_object),
@@ -33,21 +34,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
-    let solver_object2 = ode_solvers::ode_solver::OdeSolver::new("ODE Solver Heun", &solver_params);
+    let solver_object = ode_solvers::ode_solver::OdeSolver::new("ODE Solver Heun", &solver_params);
+    println!("{}", format!("{}", solver_object));
 
     let heun_method_solver = ode_solvers::heun_method::HeunSolver {
-        solver: Box::new(solver_object2),
+        solver: Box::new(solver_object),
     };
     heun_method_solver.solve(&mut solution);
     heun_method_solver.print_val(&solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
-    let solver3 =
+    let solver_object =
         ode_solvers::ode_solver::OdeSolver::new("ODE Solver Runge Kutta 4", &solver_params);
+    println!("{}", format!("{}", solver_object));
 
     let rungekutta_solver = ode_solvers::runge_kutta4::RungeKuttaSolver {
-        solver: Box::new(solver3),
+        solver: Box::new(solver_object),
     };
     rungekutta_solver.solve(&mut solution);
     rungekutta_solver.print_val(&solution);
@@ -62,12 +65,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         max_iters: MAX_ITERATIONS,
         ..Default::default() // We can fill all the values, but for this case I have just filled the ones extra for the implicit
     };
-    let solver4 = ode_solvers::ode_solver::OdeSolver::new(
+    let solver_object = ode_solvers::ode_solver::OdeSolver::new(
         "ODE Solver Implicit Euler",
         &solver_params_implicit,
     );
+    println!("{}", format!("{}", solver_object));
+
     let implicit_euler_solver = ode_solvers::implicit_euler_method::ImplicitEulerSolver {
-        solver: Box::new(solver4),
+        solver: Box::new(solver_object),
     };
     implicit_euler_solver.solve(&mut solution);
     implicit_euler_solver.print_val(&solution);
