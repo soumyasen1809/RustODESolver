@@ -8,7 +8,7 @@ pub struct ImplicitEulerSolver<'a> {
 }
 
 impl<'a> ImplicitEulerSolver<'a> {
-    fn implicit_euler_solve(&self, solution: &mut Vec<f64>) {
+    fn implicit_euler_method(&self, solution: &mut Vec<f64>) {
         println!("\n Using Newton Raphson method to find roots ...");
         for index in 0..(self.solver.params.num_steps - 1) {
             let g = |z: f64| {
@@ -51,7 +51,7 @@ impl<'a> ImplicitEulerSolver<'a> {
 impl<'a> Solve for ImplicitEulerSolver<'a> {
     fn solve(&self, solution: &mut Vec<f64>) {
         println!("\n Starting Implicit Euler Method ...");
-        self.implicit_euler_solve(solution);
+        self.implicit_euler_method(solution);
     }
 }
 
