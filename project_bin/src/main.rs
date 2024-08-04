@@ -16,8 +16,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let f_dash = |_x: f64, _y: f64| -40.0 * _x * _y; // function: f'(t,x)  // y marked as _y for now
 
     let solver_params = ode_solvers::ode_solver::OdeSolverParams {
-        f: f,
-        num_steps: num_steps,
+        f,
+        num_steps,
         t_initial: T_INITIAL,
         time_step: TIME_STEP,
         ..Default::default() // We do not need the rest for the explicit method, so we leave as Default
