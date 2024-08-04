@@ -1,5 +1,5 @@
 use crate::{
-    ode_solver::{OdeSolver, Printable, Solve},
+    ode_solvers::ode_solver::{OdeSolver, Printable, Solve},
     root_finders::newton_raphson_method::*,
 };
 

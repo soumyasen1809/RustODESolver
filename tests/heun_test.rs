@@ -1,4 +1,4 @@
-use numerical_methods_lib::{heun_method, ode_solver, ode_solver::Solve};
+use numerical_methods_lib::ode_solvers::{heun_method, ode_solver, ode_solver::Solve};
 
 #[cfg(test)]
 mod tests {

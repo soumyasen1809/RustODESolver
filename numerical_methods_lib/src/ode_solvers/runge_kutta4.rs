@@ -1,4 +1,4 @@
-use crate::ode_solver::{OdeSolver, Printable, Solve};
+use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve};
 
 /// Implements the Runge Kutta 4 Method.
 

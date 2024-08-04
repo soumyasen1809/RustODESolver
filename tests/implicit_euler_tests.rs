@@ -1,4 +1,4 @@
-use numerical_methods_lib::{implicit_euler_method, ode_solver, ode_solver::Solve};
+use numerical_methods_lib::ode_solvers::{implicit_euler_method, ode_solver, ode_solver::Solve};
 
 #[cfg(test)]
 mod tests {

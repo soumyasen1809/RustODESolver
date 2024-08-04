@@ -1,4 +1,4 @@
-use numerical_methods_lib::{ode_solver, ode_solver::Solve, runge_kutta4};
+use numerical_methods_lib::ode_solvers::{ode_solver, ode_solver::Solve, runge_kutta4};
 
 #[cfg(test)]
 mod tests {
