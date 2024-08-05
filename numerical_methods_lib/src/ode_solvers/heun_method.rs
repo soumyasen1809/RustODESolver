@@ -43,9 +43,9 @@ impl<'a> Printable for HeunSolver<'a> {
 }
 
 impl<'a> SolverChoice<'a> for HeunSolver<'a> {
-    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(HeunSolver {
-            solver: self.solver,
+            solver: Box::new(*self.solver),
         })
     }
 

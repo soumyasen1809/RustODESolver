@@ -69,9 +69,9 @@ impl<'a> Printable for ImplicitEulerSolver<'a> {
 }
 
 impl<'a> SolverChoice<'a> for ImplicitEulerSolver<'a> {
-    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(ImplicitEulerSolver {
-            solver: self.solver,
+            solver: Box::new(*self.solver),
         })
     }
 

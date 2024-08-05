@@ -1,3 +1,5 @@
+use std::{fs::File, io::Write};
+
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
 const TIME_STEP: f64 = 0.01; // h
@@ -29,6 +31,7 @@ impl Default for OdeSolverParams {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct OdeSolver<'a> {
     pub name: &'a str,
     pub params: &'a OdeSolverParams,
@@ -88,7 +91,7 @@ impl<'a> std::fmt::Display for OdeSolver<'a> {
 }
 
 pub trait SolverChoice<'a> {
-    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a>;
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a>;
     // By adding + 'a to the return type, you're specifying that
     // the returned Box<dyn SolverChoice<'a>> must live at least as long as 'a.
     // This ensures that the returned value doesn't outlive the lifetime of self
@@ -97,7 +100,7 @@ pub trait SolverChoice<'a> {
 }
 
 impl<'a> SolverChoice<'a> for OdeSolver<'a> {
-    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(OdeSolver {
             name: "Ode Solver",
             params: &self.params,
@@ -106,5 +109,29 @@ impl<'a> SolverChoice<'a> for OdeSolver<'a> {
 
     fn name_solver(&self) -> &'a str {
         self.name
+    }
+}
+
+pub trait WriteSolution<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>>;
+}
+
+impl<'a> WriteSolution<'a> for OdeSolver<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut file = File::create(&file_path)?;
+
+        for (_, val) in solution.iter().enumerate() {
+            file.write(&val.to_be_bytes())?;
+        }
+
+        Ok(())
     }
 }

@@ -1,5 +1,5 @@
 use numerical_methods_lib::*;
-use ode_solvers::ode_solver::{Printable, Solve, SolverChoice};
+use ode_solvers::ode_solver::{Printable, Solve, SolverChoice, WriteSolution};
 
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
@@ -91,6 +91,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     println!("Chosen solver: {}", solver_choice.name_solver());
+
+    // Writing solution to a file
+    let write = explicit_euler_solver.write_solution("explicit_euler_ode_solver", &solution);
+    match write {
+        Ok(_) => println!("Written successfully"),
+        Err(err) => println!("Error in writing: {}", err),
+    }
 
     Ok(())
 }

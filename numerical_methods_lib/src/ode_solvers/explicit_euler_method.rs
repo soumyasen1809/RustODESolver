@@ -1,4 +1,5 @@
-use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice};
+use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice, WriteSolution};
+use std::{fs::File, io::Write};
 
 /// Implements the Euler Method.
 
@@ -42,13 +43,29 @@ impl<'a> Printable for ExplicitEulerSolver<'a> {
 }
 
 impl<'a> SolverChoice<'a> for ExplicitEulerSolver<'a> {
-    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(ExplicitEulerSolver {
-            solver: self.solver,
+            solver: Box::new(*self.solver),
         })
     }
 
     fn name_solver(&self) -> &'a str {
         self.solver.name
+    }
+}
+
+impl<'a> WriteSolution<'a> for ExplicitEulerSolver<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut file = File::create(&file_path)?;
+
+        for (_, val) in solution.iter().enumerate() {
+            file.write(&val.to_be_bytes())?;
+        }
+
+        Ok(())
     }
 }

@@ -56,9 +56,9 @@ impl<'a> Printable for RungeKuttaSolver<'a> {
 }
 
 impl<'a> SolverChoice<'a> for RungeKuttaSolver<'a> {
-    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(RungeKuttaSolver {
-            solver: self.solver,
+            solver: Box::new(*self.solver),
         })
     }
 
