@@ -1,4 +1,4 @@
-use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve};
+use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice};
 
 /// Implements the Runge Kutta 4 Method.
 
@@ -52,5 +52,17 @@ impl<'a> Printable for RungeKuttaSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+impl<'a> SolverChoice<'a> for RungeKuttaSolver<'a> {
+    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+        Box::new(RungeKuttaSolver {
+            solver: self.solver,
+        })
+    }
+
+    fn name_solver(&self) -> &'a str {
+        self.solver.name
     }
 }

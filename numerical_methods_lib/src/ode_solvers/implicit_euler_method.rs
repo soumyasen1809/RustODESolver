@@ -1,5 +1,5 @@
 use crate::{
-    ode_solvers::ode_solver::{OdeSolver, Printable, Solve},
+    ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice},
     root_finders::newton_raphson_method::*,
 };
 
@@ -65,5 +65,17 @@ impl<'a> Printable for ImplicitEulerSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+impl<'a> SolverChoice<'a> for ImplicitEulerSolver<'a> {
+    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+        Box::new(ImplicitEulerSolver {
+            solver: self.solver,
+        })
+    }
+
+    fn name_solver(&self) -> &'a str {
+        self.solver.name
     }
 }

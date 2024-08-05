@@ -1,5 +1,5 @@
 use numerical_methods_lib::*;
-use ode_solvers::ode_solver::{Printable, Solve};
+use ode_solvers::ode_solver::{Printable, Solve, SolverChoice};
 
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
@@ -78,6 +78,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     implicit_euler_solver.print_val(&solution);
     solution.clear();
     solution.push(INITIAL_SOLUTION);
+
+    // Choosing a solver
+    let solver_object = ode_solvers::ode_solver::OdeSolver::new("ODE Solver", &solver_params);
+    let solver_input = "Implicit Euler";
+    let solver_choice = match solver_input {
+        "Explicit Euler" => explicit_euler_solver.choose_solver(),
+        "Heun Euler" => heun_method_solver.choose_solver(),
+        "RK4 Euler" => rungekutta_solver.choose_solver(),
+        "Implicit Euler" => implicit_euler_solver.choose_solver(),
+        _ => solver_object.choose_solver(),
+    };
+
+    println!("Chosen solver: {}", solver_choice.name_solver());
 
     Ok(())
 }

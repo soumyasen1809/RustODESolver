@@ -1,4 +1,4 @@
-use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve};
+use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice};
 
 /// Implements the Euler Method.
 
@@ -38,5 +38,17 @@ impl<'a> Printable for ExplicitEulerSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+impl<'a> SolverChoice<'a> for ExplicitEulerSolver<'a> {
+    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+        Box::new(ExplicitEulerSolver {
+            solver: self.solver,
+        })
+    }
+
+    fn name_solver(&self) -> &'a str {
+        self.solver.name
     }
 }

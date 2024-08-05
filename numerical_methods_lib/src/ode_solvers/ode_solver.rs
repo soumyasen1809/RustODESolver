@@ -86,3 +86,25 @@ impl<'a> std::fmt::Display for OdeSolver<'a> {
         )
     }
 }
+
+pub trait SolverChoice<'a> {
+    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a>;
+    // By adding + 'a to the return type, you're specifying that
+    // the returned Box<dyn SolverChoice<'a>> must live at least as long as 'a.
+    // This ensures that the returned value doesn't outlive the lifetime of self
+
+    fn name_solver(&self) -> &'a str;
+}
+
+impl<'a> SolverChoice<'a> for OdeSolver<'a> {
+    fn choose_solver(self) -> Box<dyn SolverChoice<'a> + 'a> {
+        Box::new(OdeSolver {
+            name: "Ode Solver",
+            params: &self.params,
+        })
+    }
+
+    fn name_solver(&self) -> &'a str {
+        self.name
+    }
+}
