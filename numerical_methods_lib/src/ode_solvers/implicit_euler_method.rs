@@ -1,7 +1,8 @@
 use crate::{
-    ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice},
+    ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice, WriteSolution},
     root_finders::newton_raphson_method::*,
 };
+use std::{fs::File, io::Write};
 
 pub struct ImplicitEulerSolver<'a> {
     pub solver: Box<OdeSolver<'a>>,
@@ -77,5 +78,21 @@ impl<'a> SolverChoice<'a> for ImplicitEulerSolver<'a> {
 
     fn name_solver(&self) -> &'a str {
         self.solver.name
+    }
+}
+
+impl<'a> WriteSolution<'a> for ImplicitEulerSolver<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut file = File::create(&file_path)?;
+
+        for (_, val) in solution.iter().enumerate() {
+            file.write(&val.to_be_bytes())?;
+        }
+
+        Ok(())
     }
 }

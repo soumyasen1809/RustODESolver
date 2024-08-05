@@ -1,4 +1,5 @@
-use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice};
+use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice, WriteSolution};
+use std::{fs::File, io::Write};
 
 /// Implements the Runge Kutta 4 Method.
 
@@ -64,5 +65,21 @@ impl<'a> SolverChoice<'a> for RungeKuttaSolver<'a> {
 
     fn name_solver(&self) -> &'a str {
         self.solver.name
+    }
+}
+
+impl<'a> WriteSolution<'a> for RungeKuttaSolver<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut file = File::create(&file_path)?;
+
+        for (_, val) in solution.iter().enumerate() {
+            file.write(&val.to_be_bytes())?;
+        }
+
+        Ok(())
     }
 }
