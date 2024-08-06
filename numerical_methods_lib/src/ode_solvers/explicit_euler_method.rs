@@ -62,8 +62,8 @@ impl<'a> WriteSolution<'a> for ExplicitEulerSolver<'a> {
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut file = File::create(&file_path)?;
 
-        for (_, val) in solution.iter().enumerate() {
-            file.write(&val.to_be_bytes())?;
+        for val in solution {
+            writeln!(file, "{}", val)?;
         }
 
         Ok(())

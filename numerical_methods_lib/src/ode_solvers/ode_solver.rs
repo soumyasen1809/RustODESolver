@@ -128,8 +128,8 @@ impl<'a> WriteSolution<'a> for OdeSolver<'a> {
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut file = File::create(&file_path)?;
 
-        for (_, val) in solution.iter().enumerate() {
-            file.write(&val.to_be_bytes())?;
+        for val in solution {
+            writeln!(file, "{}", val)?; // https://www.reddit.com/r/rust/comments/7g9hl4/writing_contents_of_vecf64_to_file/
         }
 
         Ok(())

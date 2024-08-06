@@ -31,6 +31,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     explicit_euler_solver.solve(&mut solution);
     explicit_euler_solver.print_val(&solution);
+
+    // Writing solution to a file
+    let write = explicit_euler_solver
+        .write_solution("solver_results/explicit_euler_ode_solver.txt", &solution);
+    match write {
+        Ok(_) => println!("Written successfully"),
+        Err(err) => println!("Error in writing: {}", err),
+    }
+
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
@@ -42,6 +51,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     heun_method_solver.solve(&mut solution);
     heun_method_solver.print_val(&solution);
+
+    // Writing solution to a file
+    let write =
+        explicit_euler_solver.write_solution("solver_results/heun_ode_solver.txt", &solution);
+    match write {
+        Ok(_) => println!("Written successfully"),
+        Err(err) => println!("Error in writing: {}", err),
+    }
+
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
@@ -54,6 +72,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     rungekutta_solver.solve(&mut solution);
     rungekutta_solver.print_val(&solution);
+
+    // Writing solution to a file
+    let write =
+        explicit_euler_solver.write_solution("solver_results/rk4_ode_solver.txt", &solution);
+    match write {
+        Ok(_) => println!("Written successfully"),
+        Err(err) => println!("Error in writing: {}", err),
+    }
+
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
@@ -76,6 +103,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     implicit_euler_solver.solve(&mut solution);
     implicit_euler_solver.print_val(&solution);
+
+    // Writing solution to a file
+    let write = explicit_euler_solver
+        .write_solution("solver_results/implicit_euler_ode_solver.txt", &solution);
+    match write {
+        Ok(_) => println!("Written successfully"),
+        Err(err) => println!("Error in writing: {}", err),
+    }
+
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
@@ -91,13 +127,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     println!("Chosen solver: {}", solver_choice.name_solver());
-
-    // Writing solution to a file
-    let write = implicit_euler_solver.write_solution("implicit_euler_ode_solver", &solution);
-    match write {
-        Ok(_) => println!("Written successfully"),
-        Err(err) => println!("Error in writing: {}", err),
-    }
 
     Ok(())
 }
