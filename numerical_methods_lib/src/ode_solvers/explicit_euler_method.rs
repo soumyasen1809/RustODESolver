@@ -1,7 +1,11 @@
 use crate::ode_solvers::ode_solver::{
     OdeSolver, PlotSolution, Printable, Solve, SolverChoice, WriteSolution,
 };
-use plotly::{Plot, Scatter};
+use plotly::{
+    common::{Marker, Mode},
+    layout::Axis,
+    Layout, Plot, Scatter,
+};
 use std::{fs::File, io::Write};
 
 /// Implements the Euler Method.
@@ -56,9 +60,16 @@ impl<'a> PlotSolution for ExplicitEulerSolver<'a> {
             })
             .collect();
 
-        let sol_trace = Scatter::new(t_array, solution.to_vec());
+        let sol_trace = Scatter::new(t_array, solution.to_vec())
+            .mode(Mode::Markers)
+            .marker(Marker::new().size(1));
         let mut scatter_plot = Plot::new();
         scatter_plot.add_trace(sol_trace);
+        let plot_layout = Layout::new()
+            .title("Explicit Euler Plot")
+            .x_axis(Axis::new().title("solution"))
+            .y_axis(Axis::new().title("time"));
+        scatter_plot.set_layout(plot_layout);
 
         scatter_plot.write_html("solver_results/images/explicit_euler.html");
     }
