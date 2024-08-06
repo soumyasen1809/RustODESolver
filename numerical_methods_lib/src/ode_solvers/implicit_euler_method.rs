@@ -1,7 +1,10 @@
 use crate::{
-    ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice, WriteSolution},
+    ode_solvers::ode_solver::{
+        OdeSolver, PlotSolution, Printable, Solve, SolverChoice, WriteSolution,
+    },
     root_finders::newton_raphson_method::*,
 };
+use plotly::{Plot, Scatter};
 use std::{fs::File, io::Write};
 
 pub struct ImplicitEulerSolver<'a> {
@@ -66,6 +69,25 @@ impl<'a> Printable for ImplicitEulerSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+impl<'a> PlotSolution for ImplicitEulerSolver<'a> {
+    fn plot_solution(&self, solution: &Vec<f64>) {
+        let t_array: Vec<f64> = solution
+            .iter()
+            .enumerate()
+            .map(|(index, _)| {
+                (self.solver.params.t_initial as f64)
+                    + (index as f64 * self.solver.params.time_step)
+            })
+            .collect();
+
+        let sol_trace = Scatter::new(t_array, solution.to_vec());
+        let mut scatter_plot = Plot::new();
+        scatter_plot.add_trace(sol_trace);
+
+        scatter_plot.write_html("solver_results/images/implicit_euler.html");
     }
 }
 

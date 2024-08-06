@@ -1,4 +1,7 @@
-use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve, SolverChoice, WriteSolution};
+use crate::ode_solvers::ode_solver::{
+    OdeSolver, PlotSolution, Printable, Solve, SolverChoice, WriteSolution,
+};
+use plotly::{Plot, Scatter};
 use std::{fs::File, io::Write};
 
 /// Implements the Runge Kutta 4 Method.
@@ -53,6 +56,25 @@ impl<'a> Printable for RungeKuttaSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+impl<'a> PlotSolution for RungeKuttaSolver<'a> {
+    fn plot_solution(&self, solution: &Vec<f64>) {
+        let t_array: Vec<f64> = solution
+            .iter()
+            .enumerate()
+            .map(|(index, _)| {
+                (self.solver.params.t_initial as f64)
+                    + (index as f64 * self.solver.params.time_step)
+            })
+            .collect();
+
+        let sol_trace = Scatter::new(t_array, solution.to_vec());
+        let mut scatter_plot = Plot::new();
+        scatter_plot.add_trace(sol_trace);
+
+        scatter_plot.write_html("solver_results/images/rungekutta.html");
     }
 }
 

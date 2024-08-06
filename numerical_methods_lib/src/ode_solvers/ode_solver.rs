@@ -1,3 +1,4 @@
+use plotly::{Plot, Scatter};
 use std::{fs::File, io::Write};
 
 const T_INITIAL: i32 = 0; // t0
@@ -67,6 +68,28 @@ impl<'a> Printable for OdeSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+pub trait PlotSolution {
+    fn plot_solution(&self, solution: &Vec<f64>);
+}
+
+impl<'a> PlotSolution for OdeSolver<'a> {
+    fn plot_solution(&self, solution: &Vec<f64>) {
+        let t_array: Vec<f64> = solution
+            .iter()
+            .enumerate()
+            .map(|(index, _)| {
+                (self.params.t_initial as f64) + (index as f64 * self.params.time_step)
+            })
+            .collect();
+
+        let sol_trace = Scatter::new(t_array, solution.to_vec());
+        let mut scatter_plot = Plot::new();
+        scatter_plot.add_trace(sol_trace);
+
+        scatter_plot.write_html("solver_results/images/ode_solver.html");
     }
 }
 

@@ -1,5 +1,5 @@
 use numerical_methods_lib::*;
-use ode_solvers::ode_solver::{Printable, Solve, SolverChoice, WriteSolution};
+use ode_solvers::ode_solver::{PlotSolution, Printable, Solve, SolverChoice, WriteSolution};
 
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
@@ -40,6 +40,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Err(err) => println!("Error in writing: {}", err),
     }
 
+    // Plotting solution (images stored in solver_results/images/)
+    explicit_euler_solver.plot_solution(&solution);
+
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
@@ -60,6 +63,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Err(err) => println!("Error in writing: {}", err),
     }
 
+    // Plotting solution (images stored in solver_results/images/)
+    heun_method_solver.plot_solution(&solution);
+
     solution.clear();
     solution.push(INITIAL_SOLUTION);
 
@@ -74,12 +80,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     rungekutta_solver.print_val(&solution);
 
     // Writing solution to a file
-    let write =
-        explicit_euler_solver.write_solution("solver_results/rk4_ode_solver.txt", &solution);
+    let write = rungekutta_solver.write_solution("solver_results/rk4_ode_solver.txt", &solution);
     match write {
         Ok(_) => println!("Written successfully"),
         Err(err) => println!("Error in writing: {}", err),
     }
+    // Plotting solution (images stored in solver_results/images/)
+    rungekutta_solver.plot_solution(&solution);
 
     solution.clear();
     solution.push(INITIAL_SOLUTION);
@@ -111,6 +118,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(_) => println!("Written successfully"),
         Err(err) => println!("Error in writing: {}", err),
     }
+
+    // Plotting solution (images stored in solver_results/images/)
+    implicit_euler_solver.plot_solution(&solution);
 
     solution.clear();
     solution.push(INITIAL_SOLUTION);
