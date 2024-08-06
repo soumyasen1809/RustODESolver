@@ -6,3 +6,4 @@ license = "MIT"
 authors = ["Sen"]
 
 [dependencies]
+plotly = "0.9.0"

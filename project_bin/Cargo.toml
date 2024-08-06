@@ -7,3 +7,4 @@ authors = ["Sen"]
 
 [dependencies]
 numerical_methods_lib ={ path = "../numerical_methods_lib"}
+plotly = "0.9.0"

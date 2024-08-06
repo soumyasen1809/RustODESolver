@@ -1,4 +1,12 @@
-use crate::ode_solvers::ode_solver::{OdeSolver, Printable, Solve};
+use crate::ode_solvers::ode_solver::{
+    OdeSolver, PlotSolution, Printable, Solve, SolverChoice, WriteSolution,
+};
+use plotly::{
+    common::{Marker, Mode},
+    layout::Axis,
+    Layout, Plot, Scatter,
+};
+use std::{fs::File, io::Write};
 
 /// Implements the Heun Method.
 
@@ -39,5 +47,59 @@ impl<'a> Printable for HeunSolver<'a> {
                 *value,
             )
         }
+    }
+}
+
+impl<'a> PlotSolution for HeunSolver<'a> {
+    fn plot_solution(&self, solution: &Vec<f64>) {
+        let t_array: Vec<f64> = solution
+            .iter()
+            .enumerate()
+            .map(|(index, _)| {
+                (self.solver.params.t_initial as f64)
+                    + (index as f64 * self.solver.params.time_step)
+            })
+            .collect();
+
+        let sol_trace = Scatter::new(t_array, solution.to_vec())
+            .mode(Mode::Markers)
+            .marker(Marker::new().size(1));
+        let mut scatter_plot = Plot::new();
+        scatter_plot.add_trace(sol_trace);
+        let plot_layout = Layout::new()
+            .title("Heun Plot")
+            .x_axis(Axis::new().title("solution"))
+            .y_axis(Axis::new().title("time"));
+        scatter_plot.set_layout(plot_layout);
+
+        scatter_plot.write_html("solver_results/images/heun.html");
+    }
+}
+
+impl<'a> SolverChoice<'a> for HeunSolver<'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
+        Box::new(HeunSolver {
+            solver: Box::new(*self.solver),
+        })
+    }
+
+    fn name_solver(&self) -> &'a str {
+        self.solver.name
+    }
+}
+
+impl<'a> WriteSolution<'a> for HeunSolver<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut file = File::create(&file_path)?;
+
+        for val in solution {
+            writeln!(file, "{}", val)?;
+        }
+
+        Ok(())
     }
 }

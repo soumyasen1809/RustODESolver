@@ -29,6 +29,7 @@ impl Default for OdeSolverParams {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct OdeSolver<'a> {
     pub name: &'a str,
     pub params: &'a OdeSolverParams,
@@ -45,24 +46,40 @@ pub trait Solve {
     fn solve(&self, solution: &mut Vec<f64>);
 }
 
-impl<'a> Solve for OdeSolver<'a> {
-    fn solve(&self, solution: &mut Vec<f64>) {
-        println!("\n Inside OdeSolver... with solution: {:?}", solution);
-    }
-}
-
 pub trait Printable {
     fn print_val(&self, solution: &Vec<f64>);
 }
 
-impl<'a> Printable for OdeSolver<'a> {
-    fn print_val(&self, solution: &Vec<f64>) {
-        for (index, value) in solution.iter().enumerate() {
-            println!(
-                "time: {:.3} \t value: {:.3}",
-                (self.params.t_initial as f64) + (index as f64 * self.params.time_step),
-                *value,
-            )
-        }
+pub trait PlotSolution {
+    fn plot_solution(&self, solution: &Vec<f64>);
+}
+
+pub trait SolverChoice<'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a>;
+    // By adding + 'a to the return type, you're specifying that
+    // the returned Box<dyn SolverChoice<'a>> must live at least as long as 'a.
+    // This ensures that the returned value doesn't outlive the lifetime of self
+
+    fn name_solver(&self) -> &'a str;
+}
+
+impl<'a> SolverChoice<'a> for OdeSolver<'a> {
+    fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
+        Box::new(OdeSolver {
+            name: "Ode Solver",
+            params: &self.params,
+        })
     }
+
+    fn name_solver(&self) -> &'a str {
+        self.name
+    }
+}
+
+pub trait WriteSolution<'a> {
+    fn write_solution(
+        &self,
+        file_path: &'a str,
+        solution: &Vec<f64>,
+    ) -> Result<(), Box<dyn std::error::Error>>;
 }
