@@ -1,6 +1,3 @@
-use plotly::{Plot, Scatter};
-use std::{fs::File, io::Write};
-
 const T_INITIAL: i32 = 0; // t0
 const T_FINAL: i32 = 1; // tf
 const TIME_STEP: f64 = 0.01; // h
@@ -49,68 +46,12 @@ pub trait Solve {
     fn solve(&self, solution: &mut Vec<f64>);
 }
 
-impl<'a> Solve for OdeSolver<'a> {
-    fn solve(&self, solution: &mut Vec<f64>) {
-        println!("\n Inside OdeSolver... with solution: {:?}", solution);
-    }
-}
-
 pub trait Printable {
     fn print_val(&self, solution: &Vec<f64>);
 }
 
-impl<'a> Printable for OdeSolver<'a> {
-    fn print_val(&self, solution: &Vec<f64>) {
-        for (index, value) in solution.iter().enumerate() {
-            println!(
-                "time: {:.3} \t value: {:.3}",
-                (self.params.t_initial as f64) + (index as f64 * self.params.time_step),
-                *value,
-            )
-        }
-    }
-}
-
 pub trait PlotSolution {
     fn plot_solution(&self, solution: &Vec<f64>);
-}
-
-impl<'a> PlotSolution for OdeSolver<'a> {
-    fn plot_solution(&self, solution: &Vec<f64>) {
-        let t_array: Vec<f64> = solution
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                (self.params.t_initial as f64) + (index as f64 * self.params.time_step)
-            })
-            .collect();
-
-        let sol_trace = Scatter::new(t_array, solution.to_vec());
-        let mut scatter_plot = Plot::new();
-        scatter_plot.add_trace(sol_trace);
-
-        scatter_plot.write_html("solver_results/images/ode_solver.html");
-    }
-}
-
-impl std::fmt::Display for OdeSolverParams {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "\t t_initial: {}, num_steps: {}, time_step: {}, tolerance: {}, max_iters: {}",
-            self.t_initial, self.num_steps, self.time_step, self.tolerance, self.max_iters
-        )
-    }
-}
-
-impl<'a> std::fmt::Display for OdeSolver<'a> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "Solver: {} with parameters:\n {}",
-            self.name, self.params
-        )
-    }
 }
 
 pub trait SolverChoice<'a> {
@@ -141,20 +82,4 @@ pub trait WriteSolution<'a> {
         file_path: &'a str,
         solution: &Vec<f64>,
     ) -> Result<(), Box<dyn std::error::Error>>;
-}
-
-impl<'a> WriteSolution<'a> for OdeSolver<'a> {
-    fn write_solution(
-        &self,
-        file_path: &'a str,
-        solution: &Vec<f64>,
-    ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut file = File::create(&file_path)?;
-
-        for val in solution {
-            writeln!(file, "{}", val)?; // https://www.reddit.com/r/rust/comments/7g9hl4/writing_contents_of_vecf64_to_file/
-        }
-
-        Ok(())
-    }
 }

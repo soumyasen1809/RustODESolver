@@ -24,7 +24,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let solver_object =
         ode_solvers::ode_solver::OdeSolver::new("ODE Solver Explicit Euler", &solver_params);
-    println!("{}", format!("{}", solver_object));
 
     let explicit_euler_solver = ode_solvers::explicit_euler_method::ExplicitEulerSolver {
         solver: Box::new(solver_object),
@@ -47,7 +46,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     solution.push(INITIAL_SOLUTION);
 
     let solver_object = ode_solvers::ode_solver::OdeSolver::new("ODE Solver Heun", &solver_params);
-    println!("{}", format!("{}", solver_object));
 
     let heun_method_solver = ode_solvers::heun_method::HeunSolver {
         solver: Box::new(solver_object),
@@ -71,7 +69,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let solver_object =
         ode_solvers::ode_solver::OdeSolver::new("ODE Solver Runge Kutta 4", &solver_params);
-    println!("{}", format!("{}", solver_object));
 
     let rungekutta_solver = ode_solvers::runge_kutta4::RungeKuttaSolver {
         solver: Box::new(solver_object),
@@ -103,7 +100,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "ODE Solver Implicit Euler",
         &solver_params_implicit,
     );
-    println!("{}", format!("{}", solver_object));
 
     let implicit_euler_solver = ode_solvers::implicit_euler_method::ImplicitEulerSolver {
         solver: Box::new(solver_object),
