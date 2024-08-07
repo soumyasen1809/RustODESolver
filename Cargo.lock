@@ -380,6 +380,7 @@ name = "numerical_methods_lib"
 version = "0.1.0"
 dependencies = [
  "plotly",
+ "serde",
 ]
 
 [[package]]

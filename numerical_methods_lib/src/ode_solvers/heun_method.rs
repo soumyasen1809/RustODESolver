@@ -10,35 +10,44 @@ use std::{fs::File, io::Write};
 
 /// Implements the Heun Method.
 
-pub struct HeunSolver<'a> {
-    pub solver: Box<OdeSolver<'a>>,
+pub struct HeunSolver<'a, T> {
+    pub solver: Box<OdeSolver<'a, T>>,
 }
 
-impl<'a> HeunSolver<'a> {
-    fn heun_method(&self, solution: &mut Vec<f64>) {
+impl<'a, T> HeunSolver<'a, T>
+where
+    T: std::ops::Add<f64, Output = T> + Copy,
+{
+    fn heun_method(&self, solution: &mut Vec<T>) {
         for index in 1..self.solver.params.num_steps {
             let t_i: f64 =
                 self.solver.params.t_initial as f64 + (index as f64 * self.solver.params.time_step);
-            let y_i: f64 = *solution.get((index - 1) as usize).unwrap();
+            let y_i: T = *solution.get((index - 1) as usize).unwrap();
             let k1: f64 = self.solver.params.time_step * (self.solver.params.f)(t_i, y_i);
             let k2: f64 = self.solver.params.time_step
                 * (self.solver.params.f)(t_i + self.solver.params.time_step, y_i + k1);
-            let sol: f64 = solution.get((index - 1) as usize).unwrap() + 0.5 * (k1 + k2);
+            let sol: T = *solution.get((index - 1) as usize).unwrap() + 0.5 * (k1 + k2);
             solution.push(sol);
         }
     }
 }
 
-impl<'a> Solve for HeunSolver<'a> {
+impl<'a, T> Solve<T> for HeunSolver<'a, T>
+where
+    T: std::ops::Add<f64, Output = T> + Copy,
+{
     /// Solves the ODE with the Heun solver.
-    fn solve(&self, solution: &mut Vec<f64>) {
+    fn solve(&self, solution: &mut Vec<T>) {
         println!("\n Starting Heun Method ...");
         self.heun_method(solution);
     }
 }
 
-impl<'a> Printable for HeunSolver<'a> {
-    fn print_val(&self, solution: &Vec<f64>) {
+impl<'a, T> Printable<T> for HeunSolver<'a, T>
+where
+    T: std::fmt::Display,
+{
+    fn print_val(&self, solution: &Vec<T>) {
         for (index, value) in solution.iter().enumerate() {
             println!(
                 "time: {:.3} \t value: {:.3}",
@@ -50,8 +59,11 @@ impl<'a> Printable for HeunSolver<'a> {
     }
 }
 
-impl<'a> PlotSolution for HeunSolver<'a> {
-    fn plot_solution(&self, solution: &Vec<f64>) {
+impl<'a, T> PlotSolution<T> for HeunSolver<'a, T>
+where
+    T: serde::ser::Serialize + Clone + 'static,
+{
+    fn plot_solution(&self, solution: &Vec<T>) {
         let t_array: Vec<f64> = solution
             .iter()
             .enumerate()
@@ -76,7 +88,10 @@ impl<'a> PlotSolution for HeunSolver<'a> {
     }
 }
 
-impl<'a> SolverChoice<'a> for HeunSolver<'a> {
+impl<'a, T> SolverChoice<'a> for HeunSolver<'a, T>
+where
+    T: Copy,
+{
     fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(HeunSolver {
             solver: Box::new(*self.solver),
@@ -88,11 +103,14 @@ impl<'a> SolverChoice<'a> for HeunSolver<'a> {
     }
 }
 
-impl<'a> WriteSolution<'a> for HeunSolver<'a> {
+impl<'a, T> WriteSolution<'a, T> for HeunSolver<'a, T>
+where
+    T: std::fmt::Display,
+{
     fn write_solution(
         &self,
         file_path: &'a str,
-        solution: &Vec<f64>,
+        solution: &Vec<T>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut file = File::create(&file_path)?;
 

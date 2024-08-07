@@ -10,16 +10,19 @@ use std::{fs::File, io::Write};
 
 /// Implements the Runge Kutta 4 Method.
 
-pub struct RungeKuttaSolver<'a> {
-    pub solver: Box<OdeSolver<'a>>,
+pub struct RungeKuttaSolver<'a, T> {
+    pub solver: Box<OdeSolver<'a, T>>,
 }
 
-impl<'a> RungeKuttaSolver<'a> {
-    fn runge_kutta(&self, solution: &mut Vec<f64>) {
+impl<'a, T> RungeKuttaSolver<'a, T>
+where
+    T: std::ops::Add<f64, Output = T> + Copy,
+{
+    fn runge_kutta(&self, solution: &mut Vec<T>) {
         for index in 1..self.solver.params.num_steps {
             let t_i: f64 =
                 self.solver.params.t_initial as f64 + (index as f64 * self.solver.params.time_step);
-            let y_i: f64 = *solution.get((index - 1) as usize).unwrap();
+            let y_i: T = *solution.get((index - 1) as usize).unwrap();
 
             let k1: f64 = self.solver.params.time_step * (self.solver.params.f)(t_i, y_i);
             let k2: f64 = self.solver.params.time_step
@@ -35,23 +38,29 @@ impl<'a> RungeKuttaSolver<'a> {
             let k4: f64 = self.solver.params.time_step
                 * (self.solver.params.f)(t_i + self.solver.params.time_step, y_i + k3);
 
-            let sol: f64 =
-                solution.get((index - 1) as usize).unwrap() + (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0;
+            let sol: T = *solution.get((index - 1) as usize).unwrap()
+                + (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0;
             solution.push(sol);
         }
     }
 }
 
-impl<'a> Solve for RungeKuttaSolver<'a> {
+impl<'a, T> Solve<T> for RungeKuttaSolver<'a, T>
+where
+    T: std::ops::Add<f64, Output = T> + Copy,
+{
     /// Solves the ODE with the Runge Kutta 4 solver.
-    fn solve(&self, solution: &mut Vec<f64>) {
+    fn solve(&self, solution: &mut Vec<T>) {
         println!("\n Starting RK4 Method ...");
         self.runge_kutta(solution);
     }
 }
 
-impl<'a> Printable for RungeKuttaSolver<'a> {
-    fn print_val(&self, solution: &Vec<f64>) {
+impl<'a, T> Printable<T> for RungeKuttaSolver<'a, T>
+where
+    T: std::fmt::Display,
+{
+    fn print_val(&self, solution: &Vec<T>) {
         for (index, value) in solution.iter().enumerate() {
             println!(
                 "time: {:.3} \t value: {:.3}",
@@ -63,8 +72,11 @@ impl<'a> Printable for RungeKuttaSolver<'a> {
     }
 }
 
-impl<'a> PlotSolution for RungeKuttaSolver<'a> {
-    fn plot_solution(&self, solution: &Vec<f64>) {
+impl<'a, T> PlotSolution<T> for RungeKuttaSolver<'a, T>
+where
+    T: serde::ser::Serialize + Clone + 'static,
+{
+    fn plot_solution(&self, solution: &Vec<T>) {
         let t_array: Vec<f64> = solution
             .iter()
             .enumerate()
@@ -89,7 +101,10 @@ impl<'a> PlotSolution for RungeKuttaSolver<'a> {
     }
 }
 
-impl<'a> SolverChoice<'a> for RungeKuttaSolver<'a> {
+impl<'a, T> SolverChoice<'a> for RungeKuttaSolver<'a, T>
+where
+    T: Copy,
+{
     fn choose_solver(&self) -> Box<dyn SolverChoice<'a> + 'a> {
         Box::new(RungeKuttaSolver {
             solver: Box::new(*self.solver),
@@ -101,11 +116,14 @@ impl<'a> SolverChoice<'a> for RungeKuttaSolver<'a> {
     }
 }
 
-impl<'a> WriteSolution<'a> for RungeKuttaSolver<'a> {
+impl<'a, T> WriteSolution<'a, T> for RungeKuttaSolver<'a, T>
+where
+    T: std::fmt::Display,
+{
     fn write_solution(
         &self,
         file_path: &'a str,
-        solution: &Vec<f64>,
+        solution: &Vec<T>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut file = File::create(&file_path)?;
 
